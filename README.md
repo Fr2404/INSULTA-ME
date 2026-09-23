@@ -189,7 +189,7 @@
             popup.style.transition = "opacity 0.3s ease";
             popup.style.opacity = "0";
             setTimeout(() => popup.remove(), 300);
-        }, 1500);
+        }, 3000);
     }
 
     window.addEventListener('touchstart', (e) => {
