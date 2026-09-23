@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insúltame - Generador de Insultos Absurdos online</title>
     <meta name="description" content="Haz clic o presiona cualquier tecla para recibir los insultos más absurdos, divertidos y originales de internet. ¡Entra bajo tu propio riesgo!">
     <meta name="keywords" content="insultame, generador de insultos, frases divertidas, insultos graciosos, web absurda">
     <meta name="robots" content="index, follow">
