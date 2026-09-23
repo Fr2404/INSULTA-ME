@@ -6,13 +6,12 @@
     <meta name="description" content="Haz clic o presiona cualquier tecla para recibir los insultos más absurdos, divertidos y originales de internet. ¡Entra bajo tu propio riesgo!">
     <meta name="keywords" content="insultame, generador de insultos, frases divertidas, insultos graciosos, web absurda">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://tu-enlace-de-github-o-vercel.com">
-
+    <link rel="canonical" href="https://tu-enlace-de-hosting.com">
     <!-- SEO para Redes Sociales -->
     <meta property="og:title" content="Insúltame - Generador de Insultos Absurdos">
     <meta property="og:description" content="Haz clic para recibir los insultos más originales y divertidos.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://tu-enlace-de-github-o-vercel.com">
+    <meta property="og:url" content="https://tu-enlace-de-hosting.com">
     
     <style>
         * {
@@ -30,36 +29,19 @@
             user-select: none;
             overflow: hidden; 
             padding: 20px;
+            cursor: pointer;
+            /* Evita zooms raros y retrasos al hacer doble tap en móviles */
+            touch-action: manipulation; 
         }
 
         h1 {
-            font-size: 3.5rem;
+            font-size: 4rem;
             text-transform: uppercase;
             font-weight: bold;
             color: #333;
             pointer-events: none;
             text-align: center;
-            margin: 0 0 20px 0;
-        }
-
-        /* BOTÓN EXCLUSIVO PARA MÓVILES */
-        .btn-movil {
-            display: block;
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            font-family: inherit;
-            font-weight: bold;
-            background-color: #000;
-            color: #fff;
-            border: none;
-            box-shadow: 4px 4px 0px #888;
-            cursor: pointer;
-            z-index: 10;
-            -webkit-tap-highlight-color: transparent; /* Quita el destello azul al tocar */
-        }
-        .btn-movil:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px #888;
+            margin: 0;
         }
 
         /* Estilos base para los popups */
@@ -71,23 +53,16 @@
             box-shadow: 5px 5px 0px #000;
             font-weight: bold;
             font-size: 1rem;
-            max-width: 85vw; /* Asegura que no se desborde del ancho del móvil */
+            max-width: 85vw; /* Se adapta perfectamente al ancho del móvil */
             z-index: 100;
             pointer-events: none;
             animation: aparecer 0.1s ease-out;
         }
 
-        /* --- DISEÑO EXCLUSIVO PARA PC (PANTALLAS GRANDES) --- */
+        /* DISEÑO PARA PC (PANTALLAS GRANDES) */
         @media (min-width: 768px) {
-            body {
-                cursor: pointer; /* Solo el PC invita a hacer clic en el fondo */
-            }
             h1 {
-                font-size: 7rem;
-                margin: 0;
-            }
-            .btn-movil {
-                display: none; /* Escondemos el botón en ordenadores */
+                font-size: 8rem;
             }
             .popup-random {
                 font-size: 1.2rem;
@@ -104,9 +79,6 @@
 <body>
 
     <h1>INSULTA ME</h1>
-    
-    <!-- Este botón solo se mostrará en teléfonos y tablets -->
-    <button class="btn-movil" id="btnInsulto">¡PÚLSAME, IDIOTA!</button>
 
     <script>
         const frasesRandom = [
@@ -158,7 +130,6 @@
             popup.innerText = frasesRandom[Math.floor(Math.random() * frasesRandom.length)];
             popup.style.backgroundColor = coloresRandom[Math.floor(Math.random() * coloresRandom.length)];
 
-            // Lo inyectamos primero para poder medirlo en tiempo real
             document.body.appendChild(popup);
 
             const anchoPopup = popup.offsetWidth;
@@ -166,61 +137,50 @@
 
             let posX, posY;
 
-            // DETECCIÓN: Si no hay coordenadas válidas o es una pantalla móvil pequeña
-            if (x === undefined || y === undefined || window.innerWidth < 768) {
-                // En móvil los tiramos en la mitad superior de la pantalla de forma aleatoria controlada
+            // Si no hay coordenadas (teclado), las inventamos dentro de la pantalla
+            if (x === undefined || y === undefined) {
                 posX = Math.random() * (window.innerWidth - anchoPopup - 20) + 10;
-                posY = Math.random() * (window.innerHeight * 0.45 - altoPopup) + 20; 
+                posY = Math.random() * (window.innerHeight - altoPopup - 20) + 10;
             } else {
-                // En PC sigue la punta del ratón
-                posX = x;
-                posY = y;
+                // Si hay coordenadas (clic o toque), el popup nace centrado bajo el dedo/ratón
+                posX = x - (anchoPopup / 2);
+                posY = y - (altoPopup / 2);
 
-                // Evitar que el popup se desborde por los límites derecho o inferior en PC
-                if (posX + anchoPopup > window.innerWidth) posX = window.innerWidth - anchoPopup - 20;
-                if (posY + altoPopup > window.innerHeight) posY = window.innerHeight - altoPopup - 20;
+                // Controlar bordes para que nunca se desborde ni se corte
+                if (posX < 10) posX = 10;
+                if (posY < 10) posY = 10;
+                if (posX + anchoPopup > window.innerWidth - 10) posX = window.innerWidth - anchoPopup - 10;
+                if (posY + altoPopup > window.innerHeight - 10) posY = window.innerHeight - altoPopup - 10;
             }
-
-            // Forzar márgenes mínimos de seguridad generales
-            if (posX < 10) posX = 10;
-            if (posY < 10) posY = 10;
 
             popup.style.left = `${posX}px`;
             popup.style.top = `${posY}px`;
 
-            // Animación de salida y limpieza de memoria
+            // Auto-eliminación tras 1.5 segundos
             setTimeout(() => {
                 popup.style.transition = "opacity 0.3s ease";
                 popup.style.opacity = "0";
                 setTimeout(() => popup.remove(), 300);
-            }, 3000);
+            }, 1500);
         }
 
-        // --- DISPOSITIVOS MÓVILES ---
-        const boton = document.getElementById('btnInsulto');
-        
-        // El evento 'touchstart' responde inmediatamente en pantallas táctiles sin lag
-        boton.addEventListener('touchstart', (e) => {
-            e.stopPropagation(); // Evita que el evento "haga eco" hacia el fondo
-            crearPopup();
-        });
-        
-        // Respaldar con click ordinario para móviles por si usan emuladores
-        boton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (window.innerWidth < 768) crearPopup();
+        // EVENTO PARA MÓVILES (Pulsar en pantalla táctil)
+        window.addEventListener('touchstart', (e) => {
+            // Captura las coordenadas del primer dedo que toca el cristal
+            const toque = e.touches[0];
+            crearPopup(toque.clientX, toque.clientY);
         });
 
-        // --- ORDENADORES (PC) ---
+        // EVENTO PARA PC (Hacer clic con el ratón)
         window.addEventListener('click', (e) => {
-            // Solo se activa el clic de fondo si estamos en una pantalla de PC
-            if (window.innerWidth >= 768) {
-                crearPopup(e.clientX, e.clientY);
-            }
+            // Evita duplicar el popup si el móvil emula un clic tras el touchstart
+            if (e.pointerType === 'touch') return; 
+            crearPopup(e.clientX, e.clientY);
         });
 
-        // Evento de teclado funcional para PCs
-        window.addEventListener('keydown', () => {
+        // EVENTO DE TECLADO
+        window.addEventListener('keydown', (e) => {
+            if (e.repeat) return; // Evita spam infinito si dejan pulsada la tecla
             crearPopup();
         });
     </script>
